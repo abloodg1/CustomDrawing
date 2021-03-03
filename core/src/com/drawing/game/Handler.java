@@ -5,7 +5,11 @@ import com.badlogic.gdx.InputProcessor;
 
 public class Handler implements InputProcessor {
 
-    public float y = 0;
+    public static float speed = 7;
+    public static float speedX = speed;
+    public static float speedY = 0;
+    public static float x = 400;
+    public static float y = 400;
 
     @Override
     public boolean keyDown(int keycode) {
@@ -24,9 +28,20 @@ public class Handler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        if (screenX < 64 && screenY < 64){
-            y = 100;
+        if(speedX == speed){
+            speedY = speed * -1;
+            speedX = 0;
+        }else if(speedY == speed * -1){
+            speedY = 0;
+            speedX = speed * -1;
+        }else if(speedX == speed * -1){
+            speedY = speed;
+            speedX = 0;
+        }else if(speedY == speed){
+            speedY = 0;
+            speedX = speed;
         }
+
         return false;
     }
 
