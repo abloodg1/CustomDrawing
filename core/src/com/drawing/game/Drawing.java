@@ -11,20 +11,23 @@ import java.util.Random;
 public class Drawing extends ApplicationAdapter {
 	SpriteBatch batch;
 	Texture img;
-	Texture dot;
+	Texture dotTex;
 	Handler handler;
 	float dotX;
 	float dotY;
 	Random r = new Random();
+	Dot dots[] = new Dot [5];
 
 	@Override
 	public void create () {
 		batch = new SpriteBatch();
 		img = new Texture("Images/pacman.png");
-		dot = new Texture("Images/yellowDot.png");
-
-		dotX = r.nextFloat() * 1080;
-		dotY = r.nextFloat() * 1920;
+		dotTex = new Texture("Images/yellowDot.png");
+		for(int i = 0; i < dots.length; i++){
+			dotX = r.nextFloat() * 1080;
+			dotY = r.nextFloat() * 1920;
+			dots[i] = new Dot(dotX, dotY);
+		}
 		handler = new Handler();
 		Gdx.input.setInputProcessor(handler);
 
@@ -34,11 +37,13 @@ public class Drawing extends ApplicationAdapter {
 	public void render () {
 		tick();
 
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		Gdx.gl.glClearColor(0, 0, 1, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 		batch.begin();
 		batch.draw(img, Handler.x, Handler.y, 64, 64);
-		batch.draw(dot, dotX, dotY, 32, 32);
+		for(int i = 0; i < dots.length; i++){
+			batch.draw(dotTex, dots[i].x, dots[i].y, 32, 32);
+		}
 		batch.end();
 
 	}
@@ -46,9 +51,11 @@ public class Drawing extends ApplicationAdapter {
 	public void tick(){
 		Handler.x += Handler.speedX;
 		Handler.y += Handler.speedY;
-		if(Handler.x - 32 < dotX && dotX < Handler.x + 32 && Handler.y - 32 < dotY && dotY < Handler.y + 32){
-			dotX = r.nextFloat() * 1080;
-			dotY = r.nextFloat() * 1920;
+		for(int i = 0; i < dots.length; i++) {
+			if (Handler.x - 40 < dots[i].x && dots[i].x < Handler.x + 40 && Handler.y - 40 < dots[i].y
+					&& dots[i].y < Handler.y + 40) {
+				dots[i].randomize();
+			}
 		}
 	}
 
